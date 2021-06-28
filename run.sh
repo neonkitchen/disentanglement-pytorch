@@ -27,7 +27,6 @@ nohup python3 main.py \
 --print_iter=10 \
 --alg=BetaVAE \
 --loss_terms \
---use_bandit=false \
 --controlled_capacity_increase=false \
 --batch_size=64 \
  > shape_again.out& \
