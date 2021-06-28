@@ -1,18 +1,33 @@
 #!/bin/bash
-
-# Root is where this file is.
-export NDC_ROOT="$( cd "$(dirname "$0")" ; pwd -P )"
-echo NDC_ROOT=$NDC_ROOT
-
-# Source the training environment (see the env variables defined therein) if we are not evaluating
-if [ ! -n "${AICROWD_IS_GRADING+set}" ]; then
-  echo "AICROWD_IS_GRADING is not set and you're running locally."
-  echo "This script (run.sh) is designed for runs on the AIcrowd server."
-  echo "Please run your favourite script from the scripts/ directory"
-  exit 1
-else
-  # We're on the AICrowd evaluator. Add root to python path
-  export PYTHONPATH=${PYTHONPATH}:${NDC_ROOT}
-fi
-
-bash ${NDC_ROOT}/scripts/aicrowd_challenge.sh
+nohup python3 main.py \
+--aicrowd_challenge=false \
+--name=shape_again \
+--alg=BetaVAE \
+--traverse_z=true \
+--traverse_c=true \
+--dset_dir=/home-mscluster/npather/disentangle/data/3dshapes/ \
+--dset_name=shapes3d \
+--encoder=PadlessGaussianConv64 \
+--decoder=SimpleConv64 \
+--discriminator=SimpleDiscriminator \
+--z_dim=10 \
+--use_wandb=true \
+--w_kld=3.0 \
+--w_tc=0.0 \
+--lr_G=0.001 \
+--lr_scheduler=ReduceLROnPlateau \
+--lr_scheduler_args mode=min factor=0.95 patience=1 min_lr=0.00005 \
+--max_c=25 \
+--iterations_c=100 \
+--evaluation_metric mig dci \
+--max_iter=2000 \
+--evaluate_iter=10 \
+--recon_iter=100 \
+--traverse_iter=10 \
+--print_iter=10 \
+--alg=BetaVAE \
+--loss_terms \
+--use_bandit=false \
+--controlled_capacity_increase=false \
+--batch_size=64 \
+ > shape_again.out& \
