@@ -9,6 +9,7 @@ test_outputs
 scripts
 *.sh
 **/saved
+*.out
 
 ### default python ignores
 

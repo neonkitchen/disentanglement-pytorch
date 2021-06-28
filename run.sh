@@ -22,7 +22,7 @@ nohup python3 main.py \
 --evaluation_metric mig dci \
 --max_iter=2000 \
 --evaluate_iter=10 \
---recon_iter=100 \
+--recon_iter=10 \
 --traverse_iter=10 \
 --print_iter=10 \
 --alg=BetaVAE \
