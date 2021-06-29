@@ -29,4 +29,5 @@ nohup python3 main.py \
 --loss_terms \
 --controlled_capacity_increase=false \
 --batch_size=64 \
- > shape_again.out& \
+>shape_again.out \
+&
