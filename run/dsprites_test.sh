@@ -2,7 +2,7 @@
 nohup python3 main.py \
 --name=base_dsprites \
 --alg=BetaVAE \
---dset_dir=/mnt/data/home/neelan/disentanglement-pytorch/data/dsprites \
+--dset_dir=/mnt/data/home/neelan/data/dsprites \
 --dset_name=dsprites_full \
 --traverse_z=true \
 --encoder=SimpleGaussianConv64 \

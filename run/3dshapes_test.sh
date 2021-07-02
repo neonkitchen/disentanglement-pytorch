@@ -2,7 +2,7 @@
 nohup python3 main.py \
 --name=3dshapes_base \
 --alg=BetaVAE \
---dset_dir=/mnt/data/home/neelan/disentanglement-pytorch/data/3dshapes \
+--dset_dir=/mnt/data/home/neelan/data/3dshapes \
 --dset_name=shapes3d \
 --traverse_z=true \
 --encoder=SimpleGaussianConv64 \
