@@ -1,5 +1,5 @@
 #!/bin/bash
-nohup python3 main.py \
+python3 main.py \
 --name=3dshapes_base \
 --alg=BetaVAE \
 --dset_dir=/mnt/data/home/neelan/data/3dshapes \
@@ -13,7 +13,9 @@ nohup python3 main.py \
 --max_iter=100 \
 --print_iter=10 \
 --recon_iter=50 \
---batch_size=64 \
---num_workers=16 \
->nohup/3dshapes_base.out \
+--evaluation_metric mig dci \
+--evaluate_iter=50 \
+--batch_size=1 \
+--num_workers=1 \
+>logs/3dshapes_base.out \
 &

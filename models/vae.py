@@ -164,9 +164,15 @@ class VAE(BaseDisentangler):
             vae_loss_sum = 0
             for internal_iter, (x_true1, label1) in enumerate(self.data_loader):
                 losses = dict()
+                 # normalise if 3dshapes: memory issue if you standard 3dshapes data from disentanglement_lib
+                if self.dset_name == '3dshapes':
+                    x_true1 = x_true1/255.
                 x_true1 = x_true1.to(self.device)
                 label1 = label1.to(self.device)
                 x_true2, label2 = next(iter(self.data_loader))
+                # normalise if 3dshapes: memory issue if you standard 3dshapes data from disentanglement_lib
+                if self.dset_name == '3dshapes':
+                    x_true2 = x_true2/255.
                 x_true2 = x_true2.to(self.device)
                 label2 = label2.to(self.device)
 
