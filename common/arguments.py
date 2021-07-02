@@ -116,7 +116,7 @@ def get_args(sys_args):
     parser.add_argument('--traverse_min', default=-2, type=float, help='min limit to traverse latents')
     parser.add_argument('--traverse_max', default=+2, type=float, help='max limit to traverse latents')
     parser.add_argument('--traverse_z', default=False, type=str2bool, help='whether to traverse the z space')
-    parser.add_argument('--traverse_l', default=False, type=str2bool, help='whether to traverse the l space')
+    parser.add_argument('--traverse_l', default=False, type=str2b-ool, help='whether to traverse the l space')
     parser.add_argument('--traverse_c', default=False, type=str2bool, help='whether to traverse the condition')
     parser.add_argument('--verbose', default=20, type=int, help='verbosity level')
 
