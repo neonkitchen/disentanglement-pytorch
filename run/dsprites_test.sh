@@ -13,4 +13,5 @@ nohup python3 main.py \
 --max_iter=100 \
 --batch_size=64 \
 --num_workers=16 \
+--pin_memory=True \
 >nohup/dsprites_base.out \

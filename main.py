@@ -8,8 +8,7 @@ from aicrowd.aicrowd_utils import is_on_aicrowd_server
 from common.arguments import get_args
 import models
 
-import warnings
-warnings.filterwarnings("ignore")
+
 
 torch.backends.cudnn.enabled = True
 torch.backends.cudnn.benchmark = True

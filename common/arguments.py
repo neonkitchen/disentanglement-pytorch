@@ -118,7 +118,7 @@ def get_args(sys_args):
     parser.add_argument('--traverse_z', default=False, type=str2bool, help='whether to traverse the z space')
     parser.add_argument('--traverse_l', default=False, type=str2bool, help='whether to traverse the l space')
     parser.add_argument('--traverse_c', default=False, type=str2bool, help='whether to traverse the condition')
-    parser.add_argument('--verbose', default=20, type=int, help='verbosity level')
+    parser.add_argument('--verbose', default=100, type=int, help='verbosity level')
 
     # Save/Load checkpoint
     parser.add_argument('--ckpt_dir', default='checkpoints', type=str, help='checkpoint directory')

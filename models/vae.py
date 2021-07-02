@@ -7,6 +7,7 @@ from models.base.base_disentangler import BaseDisentangler
 from architectures import encoders, decoders
 from common.ops import kl_divergence_mu0_var1, reparametrize
 from common import constants as c
+import sys
 
 
 class VAEModel(nn.Module):
@@ -159,30 +160,35 @@ class VAE(BaseDisentangler):
         return losses, {'x_recon': x_recon, 'mu': mu, 'z': z, 'logvar': logvar}
 
     def train(self):
+        print('TRAINING...')
         while not self.training_complete():
             self.net_mode(train=True)
             vae_loss_sum = 0
             for internal_iter, (x_true1, label1) in enumerate(self.data_loader):
-                losses = dict()
-                x_true1 = x_true1.to(self.device)
-                label1 = label1.to(self.device)
-                x_true2, label2 = next(iter(self.data_loader))
-                x_true2 = x_true2.to(self.device)
-                label2 = label2.to(self.device)
+                if internal_iter <= self.max_iter:
+                    losses = dict()
+                    x_true1 = x_true1.to(self.device)
+                    label1 = label1.to(self.device)
+                    x_true2, label2 = next(iter(self.data_loader))
+                    x_true2 = x_true2.to(self.device)
+                    label2 = label2.to(self.device)
 
-                losses, params = self.vae_base(losses, x_true1, x_true2, label1, label2)
+                    losses, params = self.vae_base(losses, x_true1, x_true2, label1, label2)
 
-                self.optim_G.zero_grad()
-                losses[c.TOTAL_VAE].backward(retain_graph=False)
-                vae_loss_sum += losses[c.TOTAL_VAE]
-                losses[c.TOTAL_VAE_EPOCH] = vae_loss_sum / internal_iter
+                    self.optim_G.zero_grad()
+                    losses[c.TOTAL_VAE].backward(retain_graph=False)
+                    vae_loss_sum += losses[c.TOTAL_VAE]
+                    losses[c.TOTAL_VAE_EPOCH] = vae_loss_sum / internal_iter
 
-                self.optim_G.step()
-                self.log_save(input_image=x_true1, recon_image=params['x_recon'], loss=losses)
-            # end of epoch
+                    self.optim_G.step()
+                    self.log_save(input_image=x_true1, recon_image=params['x_recon'], loss=losses)
+                # end of epoch
+                else:
+                    sys.exit()
         self.pbar.close()
 
     def test(self):
+        print('TESTING...')
         self.net_mode(train=False)
         for x_true, label in self.data_loader:
             x_true = x_true.to(self.device)
