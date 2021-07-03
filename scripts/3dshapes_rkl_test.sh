@@ -14,10 +14,10 @@ python3 main.py \
 --evaluate_iter=50 \
 --recon_iter=50 \
 --traverse_iter=50 \
---batch_size=64 \
+--batch_size=1 \
 --num_workers=1 \
 --w_recon=1.0 \
 --w_kld=1.0 \
---rkl_kld=1.0 \
+--w_rkld=1.0 \
 --evaluation_metric mig dci \
 >logs/3dshapes_rkl_test.out \
