@@ -105,6 +105,18 @@ class VAE(BaseDisentangler):
             kld_loss = (kl_divergence_mu0_var1(mu, logvar) - capacity).abs() * self.w_kld
         return kld_loss
 
+
+    def _rkld_loss_fn(self, mu, logvar):
+        if not self.rkl_controlled_capacity_increase:
+            rkld_loss = kl_divergence_mu0_var1(logvar, mu) * self.w_rkld
+        else:
+            """
+            Reverse KL loss function. 
+            """
+            rkl_capacity = torch.min(self.rkl_max_c, self.rkl_max_c * torch.tensor(self.iter) / self.rkl_iterations_c)
+            kld_loss = (kl_divergence_mu0_var1(logvar, mu) - rkl_capacity).abs() * self.w_rkld
+        return kld_loss
+
     def loss_fn(self, input_losses, **kwargs):
         x_recon = kwargs['x_recon']
         x_true = kwargs['x_true']
@@ -120,6 +132,10 @@ class VAE(BaseDisentangler):
 
         output_losses['kld'] = self._kld_loss_fn(mu, logvar)
         output_losses[c.TOTAL_VAE] += output_losses['kld']
+
+        if c.RKL in self.loss_terms:
+            output_losses['rkld'] = self._rkld_loss_fn(mu, logvar)
+            output_losses[c.TOTAL_VAE] += output_losses['rkld']
 
         if c.FACTORVAE in self.loss_terms:
             from models.factorvae import factorvae_loss_fn

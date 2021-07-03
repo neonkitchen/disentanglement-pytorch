@@ -25,6 +25,7 @@ def get_args(sys_args):
     # name
     parser.add_argument('--alg', type=str, help='the disentanglement algorithm', choices=c.ALGS)
     parser.add_argument('--controlled_capacity_increase', help='to use controlled capacity increase', default=False)
+    parser.add_argument('--rkl_controlled_capacity_increase', help='to use controlled capacity increase', default=False)
     parser.add_argument('--loss_terms', help='loss terms to be incldued in the objective', nargs='*',
                         default=list(), choices=c.LOSS_TERMS)
     parser.add_argument('--name', default='unknown_experiment', type=str, help='name of the experiment')
@@ -69,9 +70,19 @@ def get_args(sys_args):
     parser.add_argument('--w_recon', default=1.0, type=float, help='reconstruction loss weight')
     parser.add_argument('--w_kld', default=1.0, type=float, help='main KLD loss weight (e.g. in BetaVAE)')
 
+
     # Loss weights and parameters for [CapacityVAE]
     parser.add_argument('--max_c', default=25.0, type=float, help='maximum value of control parameter in CapacityVAE')
     parser.add_argument('--iterations_c', default=100000, type=int, help='how many iterations to reach max_c')
+    
+    # Loss weights and paramaters for reverse KL
+    parser.add_argument('--w_rkld', default=1.0, type=float, help='main KLD loss weight (e.g. in BetaVAE)')
+    parser.add_argument('--rkl_max_c', default=25.0, type=float, help='maximum value of control parameter in CapacityVAE')
+    parser.add_argument('--rkl_iterations_c', default=100000, type=int, help='how many iterations to reach max_c')
+ 
+
+
+
 
     # Loss weights and parameters for [FactorVAE & BetaTCVAE]
     parser.add_argument('--w_tc', default=1.0, type=float,
