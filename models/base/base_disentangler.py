@@ -13,7 +13,6 @@ from common.utils import get_scheduler
 
 DEBUG = False
 
-
 class BaseDisentangler(object):
     def __init__(self, args):
 
@@ -25,6 +24,7 @@ class BaseDisentangler(object):
         self.name = args.name
         self.alg = args.alg
         self.controlled_capacity_increase = args.controlled_capacity_increase
+        self.rkl_controlled_capacity_increase = args.rkl_controlled_capacity_increase
         self.loss_terms = args.loss_terms
         self.on_aicrowd_server = is_on_aicrowd_server()
         self.evaluation_metric = args.evaluation_metric
