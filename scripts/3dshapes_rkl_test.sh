@@ -10,14 +10,14 @@ python3 main.py \
 --z_dim=10 \
 --use_wandb=false \
 --loss_term=rkl \
---w_recon=1.0 \
 --max_iter=100 \
 --evaluate_iter=50 \
 --recon_iter=50 \
 --traverse_iter=50 \
 --batch_size=64 \
 --num_workers=1 \
+--w_recon=1.0 \
 --w_kld=1.0 \
 --rkl_kld=1.0 \
->nohup/3dshapes_test_iter.out \
+>nohup/3dshapes_rkl_test.out \
 
