@@ -19,5 +19,5 @@ python3 main.py \
 --w_recon=1.0 \
 --w_kld=1.0 \
 --rkl_kld=1.0 \
->nohup/3dshapes_rkl_test.out \
-
+--evaluation_metric mig dci \
+>logs/3dshapes_rkl_test.out \
