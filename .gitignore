@@ -8,6 +8,7 @@ test_outputs
 .idea
 **/saved
 *.out
+ignore_*.py
 data
 
 ### default python ignores
