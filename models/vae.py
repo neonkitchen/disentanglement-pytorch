@@ -167,9 +167,13 @@ class VAE(BaseDisentangler):
             for internal_iter, (x_true1, label1) in enumerate(self.data_loader):
                 if internal_iter <= self.max_iter:
                     losses = dict()
+                    if self.dset_name == 'shapes3d':
+                        x_true1/= 255.
                     x_true1 = x_true1.to(self.device)
                     label1 = label1.to(self.device)
                     x_true2, label2 = next(iter(self.data_loader))
+                    if self.dset_name == 'shapes3d':
+                        x_true2/= 255.
                     x_true2 = x_true2.to(self.device)
                     label2 = label2.to(self.device)
 
@@ -181,7 +185,7 @@ class VAE(BaseDisentangler):
                     losses[c.TOTAL_VAE_EPOCH] = vae_loss_sum / internal_iter
 
                     self.optim_G.step()
-                    self.log_save(input_image=x_true1, recon_image=params['x_recon'], loss=losses)
+                    self.log_save(internal_iter, losses[c.RECON], losses['kld'], input_image=x_true1, recon_image=params['x_recon'], loss=losses)
                 # end of epoch
                 else:
                     sys.exit()

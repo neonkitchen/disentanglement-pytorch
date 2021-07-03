@@ -170,8 +170,15 @@ class BaseDisentangler(object):
         self.lambda_d_factor = args.lambda_d_factor
         self.lambda_d = self.lambda_d_factor * self.lambda_od
 
-    def log_save(self, **kwargs):
+    def log_save(self,internal_iter,recon, kl_divergence, **kwargs):
         self.step()
+        if self.use_wandb:
+            import wandb
+            for key, value in kwargs.get('loss', dict()).items():
+                    wandb.log({'loss.'+key: value, 'custom_step': internal_iter})
+            wandb.log({'recon_loss': recon, 'custom_step': internal_iter})
+            wandb.log({'kl_divergence': kl_divergence, 'custom_step': internal_iter})
+            #wandb.log({'capacity': capacity, 'custom_step': internal_iter})
 
         # don't log anything if running on the aicrowd_server
         if self.on_aicrowd_server:
