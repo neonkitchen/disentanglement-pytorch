@@ -44,6 +44,11 @@ class VAE(BaseDisentangler):
         self.max_c = torch.tensor(args.max_c, dtype=torch.float)
         self.iterations_c = torch.tensor(args.iterations_c, dtype=torch.float)
 
+        # rkl hyper-parameters
+        self.w_rkld = args.w_rkld
+        self.rkl_max_c = torch.tensor(args.rkl_max_c, dtype=torch.float)
+        self.rkl_iterations_c = torch.tensor(args.rkl_iterations_c, dtype=torch.float)
+
         # As a little joke
         assert self.w_kld == 1.0 or self.alg != 'VAE', 'in vanilla VAE, w_kld should be 1.0. ' \
                                                        'Please use BetaVAE if intended otherwise.'
