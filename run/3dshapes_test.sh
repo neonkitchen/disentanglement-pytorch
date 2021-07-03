@@ -2,7 +2,7 @@
 python3 main.py \
 --name=3dshapes_base \
 --alg=BetaVAE \
---dset_dir=/mnt/data/home/neelan/data/3dshapes \
+--dset_dir=/home-mscluster/npather/disentangle/data/3dshapes \
 --dset_name=shapes3d \
 --traverse_z=true \
 --encoder=SimpleGaussianConv64 \
@@ -15,7 +15,7 @@ python3 main.py \
 --recon_iter=50 \
 --evaluation_metric mig dci \
 --evaluate_iter=50 \
---batch_size=1 \
---num_workers=1 \
+--batch_size=1024 \
+--num_workers=16 \
 >logs/3dshapes_base.out \
 &

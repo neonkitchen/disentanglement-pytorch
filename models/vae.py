@@ -175,7 +175,6 @@ class VAE(BaseDisentangler):
                     x_true2 = x_true2/255.
                 x_true2 = x_true2.to(self.device)
                 label2 = label2.to(self.device)
-
                 losses, params = self.vae_base(losses, x_true1, x_true2, label1, label2)
 
                 self.optim_G.zero_grad()
