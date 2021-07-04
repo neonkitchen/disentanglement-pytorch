@@ -207,6 +207,10 @@ class BaseDisentangler(object):
         # if any evaluation is included in args.evaluate_metric, evaluate every evaluate_iter
         if self.evaluation_metric and is_time_for(self.iter, self.evaluate_iter):
             self.evaluate_results = evaluate_disentanglement_metric(self, metric_names=self.evaluation_metric)
+            if self.use_wandb:
+                import wandb
+                for key, value in self.evaluate_results.items():
+                    wandb.log({key: value, 'custom_step': internal_iter})
 
         # log scalar values using wandb
         if is_time_for(self.iter, self.float_iter):
@@ -264,7 +268,7 @@ class BaseDisentangler(object):
         if self.use_wandb:
             import wandb
             wandb.log({c.RECON_IMAGE: wandb.Image(samples, caption=str(self.iter))},
-                      step=self.iter)
+                      custom_step=self.iter)
 
     def visualize_traverse(self, limit: tuple, spacing, data=None, test=False):
         self.net_mode(train=False)
