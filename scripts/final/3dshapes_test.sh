@@ -13,7 +13,7 @@ python3 main.py \
 --max_iter=100 \
 --print_iter=10 \
 --recon_iter=50 \
---evaluation_metric dci mig factor_vae_metric sap_score irs beta_vae_sklearn \
+--evaluation_metric dci mig sap_score irs \
 --evaluate_iter=100 \
 --batch_size=16 \
 --num_workers=8 \
