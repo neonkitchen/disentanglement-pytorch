@@ -346,14 +346,18 @@ class BaseDisentangler(object):
                     file_name = os.path.join(self.test_output_dir,
                                              '{}_{}_{}.{}'.format(c.TRAVERSE, self.iter, key, c.JPG))
                 else:
-                    file_name = os.path.join(self.train_output_dir, '{}_{}.{}'.format(c.TRAVERSE, key, c.JPG))
+                    file_name = os.path.join(self.train_output_dir, '{}_{}_{}.{}'.format(c.TRAVERSE, self.iter, key, c.JPG))
                 torchvision.utils.save_image(samples, file_name)
 
             if self.use_wandb:
                 import wandb
                 title = '{}_{}_iter:{}'.format(c.TRAVERSE, key, self.iter)
+<<<<<<< Updated upstream
                 wandb.log({'{}_{}'.format(c.TRAVERSE, key): wandb.Image(samples, caption=title)},
                           custom_step=self.iter)
+=======
+                wandb.log({'{}_{}'.format(c.TRAVERSE, key): wandb.Image(samples, caption=title)},)
+>>>>>>> Stashed changes
 
         if self.gif_save and len(gifs) > 0:
             total_rows = self.num_labels * self.l_dim + \
@@ -372,9 +376,9 @@ class BaseDisentangler(object):
                 if test:
                     file_name = os.path.join(self.test_output_dir, '{}_{}_{}.{}'.format(c.GIF, self.iter, key, c.GIF))
                 else:
-                    file_name = os.path.join(self.train_output_dir, '{}_{}.{}'.format(c.GIF, key, c.GIF))
+                    file_name = os.path.join(self.train_output_dir, '{}_{}_{}.{}'.format(c.GIF, self.iter, key, c.GIF))
 
-                grid2gif(str(os.path.join(self.train_output_dir, '{}_{}*.{}').format(c.TEMP, key, c.JPG)),
+                grid2gif(str(os.path.join(self.train_output_dir, '{}_{}_{}.{}').format(c.TEMP, self.iter, key, c.JPG)),
                          file_name, delay=10)
 
                 # Delete temp image files
