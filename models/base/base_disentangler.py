@@ -13,7 +13,6 @@ from common.utils import get_scheduler
 
 DEBUG = False
 
-
 class BaseDisentangler(object):
     def __init__(self, args):
 
@@ -25,6 +24,7 @@ class BaseDisentangler(object):
         self.name = args.name
         self.alg = args.alg
         self.controlled_capacity_increase = args.controlled_capacity_increase
+        self.rkl_controlled_capacity_increase = args.rkl_controlled_capacity_increase
         self.loss_terms = args.loss_terms
         self.on_aicrowd_server = is_on_aicrowd_server()
         self.evaluation_metric = args.evaluation_metric
@@ -170,8 +170,15 @@ class BaseDisentangler(object):
         self.lambda_d_factor = args.lambda_d_factor
         self.lambda_d = self.lambda_d_factor * self.lambda_od
 
-    def log_save(self, **kwargs):
+    def log_save(self,internal_iter,recon, kl_divergence, **kwargs):
         self.step()
+        if self.use_wandb:
+            import wandb
+            for key, value in kwargs.get('loss', dict()).items():
+                    wandb.log({'loss.'+key: value, 'custom_step': internal_iter})
+            wandb.log({'recon_loss': recon, 'custom_step': internal_iter})
+            wandb.log({'kl_divergence': kl_divergence, 'custom_step': internal_iter})
+            #wandb.log({'capacity': capacity, 'custom_step': internal_iter})
 
         # don't log anything if running on the aicrowd_server
         if self.on_aicrowd_server:
@@ -200,6 +207,10 @@ class BaseDisentangler(object):
         # if any evaluation is included in args.evaluate_metric, evaluate every evaluate_iter
         if self.evaluation_metric and is_time_for(self.iter, self.evaluate_iter):
             self.evaluate_results = evaluate_disentanglement_metric(self, metric_names=self.evaluation_metric)
+            if self.use_wandb:
+                import wandb
+                for key, value in self.evaluate_results.items():
+                    wandb.log({key: value, 'custom_step': internal_iter})
 
         # log scalar values using wandb
         if is_time_for(self.iter, self.float_iter):
@@ -218,7 +229,7 @@ class BaseDisentangler(object):
 
             if self.use_wandb:
                 import wandb
-                wandb.log(self.info_cumulative, step=self.iter)
+                wandb.log(self.info_cumulative, custom_step=self.iter)
 
             # empty info_cumulative
             for key, value in self.info_cumulative.items():
@@ -251,13 +262,13 @@ class BaseDisentangler(object):
             if test:
                 file_name = os.path.join(self.test_output_dir, '{}_{}.{}'.format(c.RECON, self.iter, c.JPG))
             else:
-                file_name = os.path.join(self.train_output_dir, '{}.{}'.format(c.RECON, c.JPG))
+                file_name = os.path.join(self.train_output_dir, '{}_{}.{}'.format(c.RECON,self.iter, c.JPG))
             torchvision.utils.save_image(samples, file_name)
 
         if self.use_wandb:
             import wandb
             wandb.log({c.RECON_IMAGE: wandb.Image(samples, caption=str(self.iter))},
-                      step=self.iter)
+                      custom_step=self.iter)
 
     def visualize_traverse(self, limit: tuple, spacing, data=None, test=False):
         self.net_mode(train=False)
@@ -335,14 +346,14 @@ class BaseDisentangler(object):
                     file_name = os.path.join(self.test_output_dir,
                                              '{}_{}_{}.{}'.format(c.TRAVERSE, self.iter, key, c.JPG))
                 else:
-                    file_name = os.path.join(self.train_output_dir, '{}_{}.{}'.format(c.TRAVERSE, key, c.JPG))
+                    file_name = os.path.join(self.train_output_dir, '{}_{}_{}.{}'.format(c.TRAVERSE, self.iter, key, c.JPG))
                 torchvision.utils.save_image(samples, file_name)
 
             if self.use_wandb:
                 import wandb
                 title = '{}_{}_iter:{}'.format(c.TRAVERSE, key, self.iter)
                 wandb.log({'{}_{}'.format(c.TRAVERSE, key): wandb.Image(samples, caption=title)},
-                          step=self.iter)
+                          custom_step=self.iter)
 
         if self.gif_save and len(gifs) > 0:
             total_rows = self.num_labels * self.l_dim + \

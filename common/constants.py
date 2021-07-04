@@ -2,7 +2,7 @@
 LOSS = 'loss'
 ACCURACY = 'acc'
 ITERATION = 'iteration'
-WANDB_NAME = 'disentanglement'
+WANDB_NAME = 'disentangling_divergences'
 INPUT_IMAGE = 'input_image'
 RECON_IMAGE = 'recon_image'
 RECON = 'recon'
@@ -15,6 +15,7 @@ RANDOM = 'random'
 TEMP = 'tmp'
 GIF = 'gif'
 JPG = 'jpg'
+RKL = 'rkl'
 FACTORVAE = 'FactorVAE'
 DIPVAEI = 'DIPVAEI'
 DIPVAEII = 'DIPVAEII'
@@ -26,7 +27,7 @@ LEARNING_RATE = 'learning_rate'
 
 # Algorithms
 ALGS = ('AE', 'VAE', 'BetaVAE', 'CVAE', 'IFCVAE')
-LOSS_TERMS = (FACTORVAE, DIPVAEI, DIPVAEII, BetaTCVAE, INFOVAE)
+LOSS_TERMS = (RKL, FACTORVAE, DIPVAEI, DIPVAEII, BetaTCVAE, INFOVAE)
 
 # Datasets
 DATASETS = ('celebA', 'dsprites_full', 'dsprites_noshape', 'color_dsprites', 'noisy_dsprites', 'scream_dsprites',

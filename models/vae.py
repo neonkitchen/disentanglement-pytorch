@@ -7,6 +7,7 @@ from models.base.base_disentangler import BaseDisentangler
 from architectures import encoders, decoders
 from common.ops import kl_divergence_mu0_var1, reparametrize
 from common import constants as c
+import sys
 
 
 class VAEModel(nn.Module):
@@ -42,6 +43,11 @@ class VAE(BaseDisentangler):
         self.w_kld = args.w_kld
         self.max_c = torch.tensor(args.max_c, dtype=torch.float)
         self.iterations_c = torch.tensor(args.iterations_c, dtype=torch.float)
+
+        # rkl hyper-parameters
+        self.w_rkld = args.w_rkld
+        self.rkl_max_c = torch.tensor(args.rkl_max_c, dtype=torch.float)
+        self.rkl_iterations_c = torch.tensor(args.rkl_iterations_c, dtype=torch.float)
 
         # As a little joke
         assert self.w_kld == 1.0 or self.alg != 'VAE', 'in vanilla VAE, w_kld should be 1.0. ' \
@@ -104,6 +110,18 @@ class VAE(BaseDisentangler):
             kld_loss = (kl_divergence_mu0_var1(mu, logvar) - capacity).abs() * self.w_kld
         return kld_loss
 
+
+    def _rkld_loss_fn(self, mu, logvar):
+        if not self.rkl_controlled_capacity_increase:
+            rkld_loss = kl_divergence_mu0_var1(logvar, mu) * self.w_rkld
+        else:
+            """
+            Reverse KL loss function. 
+            """
+            rkl_capacity = torch.min(self.rkl_max_c, self.rkl_max_c * torch.tensor(self.iter) / self.rkl_iterations_c)
+            rkld_loss = (kl_divergence_mu0_var1(logvar, mu) - rkl_capacity).abs() * self.w_rkld
+        return rkld_loss
+
     def loss_fn(self, input_losses, **kwargs):
         x_recon = kwargs['x_recon']
         x_true = kwargs['x_true']
@@ -119,6 +137,10 @@ class VAE(BaseDisentangler):
 
         output_losses['kld'] = self._kld_loss_fn(mu, logvar)
         output_losses[c.TOTAL_VAE] += output_losses['kld']
+
+        if c.RKL in self.loss_terms:
+            output_losses['rkld'] = self._rkld_loss_fn(mu, logvar)
+            output_losses[c.TOTAL_VAE] += output_losses['rkld']
 
         if c.FACTORVAE in self.loss_terms:
             from models.factorvae import factorvae_loss_fn
@@ -159,35 +181,40 @@ class VAE(BaseDisentangler):
         return losses, {'x_recon': x_recon, 'mu': mu, 'z': z, 'logvar': logvar}
 
     def train(self):
+        print('TRAINING...')
         while not self.training_complete():
             self.net_mode(train=True)
             vae_loss_sum = 0
             for internal_iter, (x_true1, label1) in enumerate(self.data_loader):
-                losses = dict()
-                 # normalise if 3dshapes: memory issue if you standard 3dshapes data from disentanglement_lib
-                if self.dset_name == '3dshapes':
-                    x_true1 = x_true1/255.
-                x_true1 = x_true1.to(self.device)
-                label1 = label1.to(self.device)
-                x_true2, label2 = next(iter(self.data_loader))
-                # normalise if 3dshapes: memory issue if you standard 3dshapes data from disentanglement_lib
-                if self.dset_name == '3dshapes':
-                    x_true2 = x_true2/255.
-                x_true2 = x_true2.to(self.device)
-                label2 = label2.to(self.device)
-                losses, params = self.vae_base(losses, x_true1, x_true2, label1, label2)
+                if internal_iter <= self.max_iter:
+                    losses = dict()
+                    if self.dset_name == 'shapes3d':
+                        x_true1/= 255.
+                    x_true1 = x_true1.to(self.device)
+                    label1 = label1.to(self.device)
+                    x_true2, label2 = next(iter(self.data_loader))
+                    if self.dset_name == 'shapes3d':
+                        x_true2/= 255.
+                    x_true2 = x_true2.to(self.device)
+                    label2 = label2.to(self.device)
 
-                self.optim_G.zero_grad()
-                losses[c.TOTAL_VAE].backward(retain_graph=False)
-                vae_loss_sum += losses[c.TOTAL_VAE]
-                losses[c.TOTAL_VAE_EPOCH] = vae_loss_sum / internal_iter
+                    losses, params = self.vae_base(losses, x_true1, x_true2, label1, label2)
 
-                self.optim_G.step()
-                self.log_save(input_image=x_true1, recon_image=params['x_recon'], loss=losses)
-            # end of epoch
+                    self.optim_G.zero_grad()
+                    losses[c.TOTAL_VAE].backward(retain_graph=False)
+                    vae_loss_sum += losses[c.TOTAL_VAE]
+                    losses[c.TOTAL_VAE_EPOCH] = vae_loss_sum / internal_iter
+
+                    self.optim_G.step()
+                    self.log_save(internal_iter, losses[c.RECON], losses['kld'], input_image=x_true1, recon_image=params['x_recon'], loss=losses)
+                # end of epoch
+                else:
+                    sys.exit()
+
         self.pbar.close()
 
     def test(self):
+        print('TESTING...')
         self.net_mode(train=False)
         for x_true, label in self.data_loader:
             x_true = x_true.to(self.device)
