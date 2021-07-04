@@ -119,8 +119,8 @@ class VAE(BaseDisentangler):
             Reverse KL loss function. 
             """
             rkl_capacity = torch.min(self.rkl_max_c, self.rkl_max_c * torch.tensor(self.iter) / self.rkl_iterations_c)
-            kld_loss = (kl_divergence_mu0_var1(logvar, mu) - rkl_capacity).abs() * self.w_rkld
-        return kld_loss
+            rkld_loss = (kl_divergence_mu0_var1(logvar, mu) - rkl_capacity).abs() * self.w_rkld
+        return rkld_loss
 
     def loss_fn(self, input_losses, **kwargs):
         x_recon = kwargs['x_recon']
