@@ -1,6 +1,6 @@
 #!/bin/bash
 python3 main.py \
---name=3dshapes_base \
+--name=3dshapes_test \
 --alg=BetaVAE \
 --dset_dir=/Users/neelanpather/dev/data/3dshapes \
 --dset_name=shapes3d \
@@ -8,7 +8,7 @@ python3 main.py \
 --encoder=SimpleGaussianConv64 \
 --decoder=SimpleConv64 \
 --z_dim=10 \
---use_wandb=false \
+--use_wandb=true \
 --loss_term=rkl \
 --max_iter=100 \
 --evaluate_iter=50 \
