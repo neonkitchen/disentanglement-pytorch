@@ -267,8 +267,7 @@ class BaseDisentangler(object):
 
         if self.use_wandb:
             import wandb
-            wandb.log({c.RECON_IMAGE: wandb.Image(samples, caption=str(self.iter))},
-                      custom_step=self.iter)
+            wandb.log({c.RECON_IMAGE: wandb.Image(samples, caption=str(self.iter))})
 
     def visualize_traverse(self, limit: tuple, spacing, data=None, test=False):
         self.net_mode(train=False)
