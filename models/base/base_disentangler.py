@@ -133,11 +133,13 @@ class BaseDisentangler(object):
         self.traverse_c = args.traverse_c
         self.white_line = None
 
+        self.wandb_name = args.wandb_name
+
         self.use_wandb = args.use_wandb
         if self.use_wandb:
             import wandb
             resume_wandb = True if args.wandb_resume_id else False
-            wandb.init(config=args, resume=resume_wandb, id=args.wandb_resume_id, project=c.WANDB_NAME,
+            wandb.init(config=args, resume=resume_wandb, id=args.wandb_resume_id, project=self.wandb_name,
                        name=args.name)
 
         # Checkpoint

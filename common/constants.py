@@ -2,7 +2,7 @@
 LOSS = 'loss'
 ACCURACY = 'acc'
 ITERATION = 'iteration'
-WANDB_NAME = 'disentangling_divergences'
+#WANDB_NAME = 'disentangling_divergences'
 INPUT_IMAGE = 'input_image'
 RECON_IMAGE = 'recon_image'
 RECON = 'recon'
