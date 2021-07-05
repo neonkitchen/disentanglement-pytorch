@@ -132,15 +132,16 @@ class BaseDisentangler(object):
         self.traverse_l = args.traverse_l
         self.traverse_c = args.traverse_c
         self.white_line = None
-
+        
+        # wandb related variables
+        self.use_wandb = args.use_wandb
         self.wandb_name = args.wandb_name
 
-        self.use_wandb = args.use_wandb
         if self.use_wandb:
             import wandb
             resume_wandb = True if args.wandb_resume_id else False
-            wandb.init(config=args, resume=resume_wandb, id=args.wandb_resume_id, project=self.wandb_name,
-                       name=args.name)
+            wandb.init(config=args, resume=resume_wandb, id=args.wandb_resume_id, 
+                        project=self.wandb_name, name=args.name)
 
         # Checkpoint
         self.ckpt_dir = os.path.join(args.ckpt_dir, args.name)

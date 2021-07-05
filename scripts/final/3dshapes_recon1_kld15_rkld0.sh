@@ -1,6 +1,6 @@
 #!/bin/bash
 python3 main.py \
---name=3dshapes_allmetrics \
+--name=3dshapes_recon1_kld3_rkld0 \
 --alg=BetaVAE \
 --dset_dir=/home/neelan/dev/data/3dshapes \
 --dset_name=shapes3d \
@@ -9,13 +9,14 @@ python3 main.py \
 --decoder=SimpleConv64 \
 --z_dim=10 \
 --use_wandb=true \
---w_kld=1.0 \
---max_iter=100 \
---print_iter=10 \
---recon_iter=50 \
+--w_kld=15.0 \
+--max_iter=3800 \
+--print_iter=100 \
+--recon_iter=100 \
 --evaluation_metric dci mig factor_vae_metric sap_score irs beta_vae_sklearn \
---evaluate_iter=100 \
---batch_size=16 \
+--evaluate_iter=2000 \
+--batch_size=128 \
 --num_workers=8 \
->/home/neelan/dev/disentanglement-pytorch/logs/3dshapes_allmetrics.out \
+--wandb_name=MSc_Final
+>/home/neelan/dev/disentanglement-pytorch/logs/final/3dshapes_allmetrics.out \
 &
