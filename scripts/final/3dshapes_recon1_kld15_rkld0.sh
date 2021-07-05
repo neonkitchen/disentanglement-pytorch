@@ -18,5 +18,4 @@ python3 main.py \
 --batch_size=128 \
 --num_workers=8 \
 --wandb_name=MSc_Final
->/home/neelan/dev/disentanglement-pytorch/logs/final/3dshapes_allmetrics.out \
-&
+

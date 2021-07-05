@@ -1,6 +1,6 @@
 #!/bin/bash
 python3 main.py \
---name=3dshapes_recon1_kld3_rkld0 \
+--name=3dshapes_recon1_kld12_rkld1 \
 --alg=BetaVAE \
 --dset_dir=/home/neelan/dev/data/3dshapes \
 --dset_name=shapes3d \
@@ -10,6 +10,8 @@ python3 main.py \
 --z_dim=10 \
 --use_wandb=true \
 --w_kld=12.0 \
+--loss_terms rkl \
+--w_rkld=1.0 \
 --max_iter=3800 \
 --print_iter=100 \
 --recon_iter=100 \

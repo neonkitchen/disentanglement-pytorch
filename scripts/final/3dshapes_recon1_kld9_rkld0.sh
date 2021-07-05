@@ -1,6 +1,6 @@
 #!/bin/bash
 python3 main.py \
---name=3dshapes_recon1_kld3_rkld0 \
+--name=3dshapes_recon1_kld9_rkld0 \
 --alg=BetaVAE \
 --dset_dir=/home/neelan/dev/data/3dshapes \
 --dset_name=shapes3d \
@@ -17,6 +17,5 @@ python3 main.py \
 --evaluate_iter=2000 \
 --batch_size=128 \
 --num_workers=8 \
---wandb_name=MSc_Final
->/home/neelan/dev/disentanglement-pytorch/logs/final/3dshapes_allmetrics.out \
-&
+--wandb_name=MSc_Final \
+
