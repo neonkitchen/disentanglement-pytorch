@@ -232,7 +232,7 @@ class BaseDisentangler(object):
 
             if self.use_wandb:
                 import wandb
-                wandb.log(self.info_cumulative, custom_step=self.iter)
+                wandb.log(self.info_cumulative)
 
             # empty info_cumulative
             for key, value in self.info_cumulative.items():
@@ -354,8 +354,7 @@ class BaseDisentangler(object):
             if self.use_wandb:
                 import wandb
                 title = '{}_{}_iter:{}'.format(c.TRAVERSE, key, self.iter)
-                wandb.log({'{}_{}'.format(c.TRAVERSE, key): wandb.Image(samples, caption=title)},
-                          custom_step=self.iter)
+                wandb.log({'{}_{}'.format(c.TRAVERSE, key): wandb.Image(samples, caption=title)})
 
         if self.gif_save and len(gifs) > 0:
             total_rows = self.num_labels * self.l_dim + \
