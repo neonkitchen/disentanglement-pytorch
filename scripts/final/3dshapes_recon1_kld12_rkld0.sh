@@ -10,6 +10,7 @@ python3 main.py \
 --z_dim=10 \
 --use_wandb=true \
 --w_kld=12.0 \
+--w_rkld=0.0 \
 --max_iter=3800 \
 --print_iter=100 \
 --recon_iter=100 \
